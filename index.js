@@ -95,8 +95,24 @@ client.connect(err => {
       })
   })
 
+  //  ........Load verified provider and user........
   app.get('/loadAll/:role', (req, res) => {
-    usersCollection.find({ role: req.params.role })
+    if (req.params.role === 'service-provider') {
+      usersCollection.find({ role: req.params.role, isVerified: "yes" })
+        .toArray((err, documents) => {
+          res.send(documents);
+        })
+    } else {
+      usersCollection.find({ role: req.params.role })
+        .toArray((err, documents) => {
+          res.send(documents);
+        })
+    }
+  })
+
+  // .......Load unverified provider .......
+  app.get('/unverified-provider/:role', (req, res) => {
+    usersCollection.find({ role: req.params.role, isVerified: 'no' })
       .toArray((err, documents) => {
         res.send(documents);
       })
@@ -148,6 +164,25 @@ client.connect(err => {
         console.log(result)
       })
   })
+
+    // provider-verified....
+    app.patch('/updateVerified/:_id', (req, res) => {
+      const UpdatedValues = req.body;
+      console.log(UpdatedValues)
+      usersCollection.updateOne(
+        { _id: ObjectId(req.params._id) },
+        { $set: { isVerified: UpdatedValues.isVerified } }
+      )
+        .then(result => {
+          res.send(result.modifiedCount > 0)
+          console.log('updated!')
+          console.log(result)
+        })
+    })
+
+
+
+
 
 
   app.patch('/updateService/:_id', (req, res) => {
@@ -246,6 +281,9 @@ client.connect(err => {
         res.send(documents);
       })
   })
+
+
+
 
 
 });
