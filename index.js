@@ -34,14 +34,16 @@ client.connect(err => {
       .then(result => {
         if (result) {
           if (result.role === user.role) {
-            res.send(true);
+            res.send(result);
           } else {
             res.send(false);
           }
         } else {
           usersCollection.insertOne(user)
             .then(result => {
-              res.send(result.acknowledged);
+              if(result.acknowledged){
+                res.send(user);
+              }
             })
         }
       })
