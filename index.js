@@ -110,7 +110,9 @@ client.connect(err => {
           res.send(documents);
         })
     }
-  })
+  });
+
+ 
 
   // .......Load unverified provider .......
   app.get('/unverified-provider/:role', (req, res) => {
@@ -126,6 +128,15 @@ client.connect(err => {
       .toArray((err, documents) => {
         res.send(documents);
       })
+  })
+
+  // load single provider...
+  app.get('/provider-details/:email', (req, res) => {
+    // servicesCollection.find({ serviceProviderEmail: req.params.serviceProviderEmail })
+    usersCollection.find({email: req.params.email })
+    .toArray((err, documents) => {
+      res.send(documents)
+    })
   })
 
 
